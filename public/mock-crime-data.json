@@ -1,0 +1,98 @@
+[
+    {
+        "category": "anti-social-behaviour", 
+        "persistent_id": "a", 
+        "location_subtype": "", 
+        "id": 116208998, 
+        "location": {
+            "latitude": "51.5033", 
+            "street": {
+                "id": 1445786, 
+                "name": "On or near Parliament Street"
+            }, 
+            "longitude": "-0.1276"
+        }, 
+        "context": "", 
+        "month": "2024-01", 
+        "location_type": "Force", 
+        "outcome_status": null
+    },
+    {
+        "category": "anti-social-behaviour", 
+        "persistent_id": "b", 
+        "location_subtype": "", 
+        "id": 116208999, 
+        "location": {
+            "latitude": "51.5033", 
+            "street": {
+                "id": 1445786, 
+                "name": "On or near Parliament Street"
+            }, 
+            "longitude": "-0.1276"
+        }, 
+        "context": "", 
+        "month": "2024-01", 
+        "location_type": "Force", 
+        "outcome_status": null
+    },
+    {
+        "category": "theft-from-the-person", 
+        "persistent_id": "c", 
+        "location_subtype": "", 
+        "id": 116201253, 
+        "location": {
+            "latitude": "51.5033", 
+            "street": {
+                "id": 1445786, 
+                "name": "On or near Parliament Street"
+            }, 
+            "longitude": "-0.1276"
+        }, 
+        "context": "", 
+        "month": "2024-01", 
+        "location_type": "Force", 
+        "outcome_status": {
+            "category": "Investigation complete; no suspect identified", 
+            "date": "2024-01"
+        }
+    },
+    {
+        "category": "vehicle-crime", 
+        "persistent_id": "d", 
+        "location_subtype": "", 
+        "id": 116201254, 
+        "location": {
+            "latitude": "51.5145", 
+            "street": {
+                "id": 1445787, 
+                "name": "On or near Park Lane"
+            }, 
+            "longitude": "-0.1593"
+        }, 
+        "context": "", 
+        "month": "2024-01", 
+        "location_type": "Force", 
+        "outcome_status": {
+            "category": "Investigation complete; no suspect identified", 
+            "date": "2024-01"
+        }
+    },
+    {
+        "category": "violent-crime", 
+        "persistent_id": "e", 
+        "location_subtype": "", 
+        "id": 116201255, 
+        "location": {
+            "latitude": "51.5145", 
+            "street": {
+                "id": 1445787, 
+                "name": "On or near Park Lane"
+            }, 
+            "longitude": "-0.1593"
+        }, 
+        "context": "", 
+        "month": "2024-01", 
+        "location_type": "Force", 
+        "outcome_status": null
+    }
+]

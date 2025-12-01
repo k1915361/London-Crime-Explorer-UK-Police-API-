@@ -1,0 +1,5 @@
+{
+  "name": "Mini DB London Crime Explorer",
+  "description": "An interactive web application that uses DuckDB-WASM to analyze street-level crime data for Greater London directly in the browser. Search and aggregate millions of records instantly.",
+  "requestFramePermissions": []
+}
