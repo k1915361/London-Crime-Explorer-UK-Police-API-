@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fetchCrimeData } from './apiService';
 import * as geocodingService from './geocodingService';
 
@@ -10,6 +10,11 @@ vi.mock('./geocodingService', () => ({
 describe('apiService', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should fetch data from the live API successfully', async () => {
@@ -96,17 +101,37 @@ describe('apiService', () => {
         statusText: 'Internal Server Error',
       })
       .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      .mockResolvedValueOnce({
         ok: true,
         statusText: 'OK',
         json: async () => mockFallbackData,
       });
 
-    const result = await fetchCrimeData('London');
+    const fetchPromise = fetchCrimeData('London');
+    
+    // Fast-forward timers for the retries
+    await vi.runAllTimersAsync();
+    
+    const result = await fetchPromise;
 
     expect(result.isFallback).toBe(true);
     expect(result.data).toEqual(mockFallbackData);
     expect(result.error).toBe('API request failed with status 500: Internal Server Error');
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(global.fetch).toHaveBeenCalledTimes(5); // 4 retries (initial + 3) + 1 fallback
   });
 
   it('should throw an error if both live API and fallback fail', async () => {

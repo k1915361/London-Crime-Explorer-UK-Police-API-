@@ -34,10 +34,44 @@ export const fetchCrimeData = async (location: string, date: string = '2024-04')
     // Step 2: Fetch data from the live API using the coordinates
     const apiUrl = `${API_BASE_URL}?lat=${center.lat}&lng=${center.lon}&date=${date}`;
     
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+    let response: Response | null = null;
+    let retries = 0;
+    const maxRetries = 3;
+    let lastError: Error | null = null;
+
+    while (retries <= maxRetries) {
+      try {
+        response = await fetch(apiUrl);
+        if (response.ok) {
+          break; // Success, exit retry loop
+        }
+        
+        // If it's a 4xx error (like 400 Bad Request or 404 Not Found), don't retry, it's a client error
+        if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+          throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+        }
+        
+        throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        
+        // Don't wait on the last attempt
+        if (retries === maxRetries) {
+          break;
+        }
+        
+        // Exponential backoff: 1s, 2s, 4s...
+        const delay = Math.pow(2, retries) * 1000;
+        console.warn(`API request failed. Retrying in ${delay}ms... (Attempt ${retries + 1} of ${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        retries++;
+      }
     }
+
+    if (!response || !response.ok) {
+      throw lastError || new Error("API request failed after retries");
+    }
+
     const data: unknown = await response.json();
 
     if (!Array.isArray(data) || data.length === 0) {

@@ -48,7 +48,11 @@ const HeatmapLayer = ({ points }: HeatmapLayerProps) => {
         radius: 25,
         blur: 15,
         maxZoom: 18,
-        gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'red' }
+        gradient: { 
+          0.4: 'rgba(0, 0, 255, 0.5)', 
+          0.65: 'rgba(0, 255, 0, 0.5)', 
+          1: 'rgba(255, 0, 0, 0.5)' 
+        }
     }).addTo(map);
 
     // Cleanup function to remove the layer when the component unmounts or points change

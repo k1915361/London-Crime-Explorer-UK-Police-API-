@@ -40,9 +40,20 @@ This document tracks the completed features and outlines potential future improv
 - [ ] **Client-Side Caching**: Implement caching (using `localStorage`, `IndexedDB`, or a library like React Query) for previously searched locations to reduce redundant API calls and improve load times.
 - [x] **URL State Management**: Sync the search query and active view (list/map) with the URL query parameters (e.g., `?location=Westminster&view=map`). This allows users to bookmark and share specific searches.
 - [x] **Date Filtering**: Add a date picker UI to allow users to query crime data for specific months (currently hardcoded to `2024-04` in the API call).
-- [ ] **Map Clustering**: Add marker clustering (e.g., `react-leaflet-cluster`) for lower zoom levels, allowing users to toggle between a density heatmap and discrete clustered incidents.
+- [x] **Map Clustering**: Add marker clustering (e.g., `react-leaflet-cluster`) for lower zoom levels, allowing users to toggle between a density heatmap and discrete clustered incidents.
 - [ ] Fetch after clicking a point area on map
 
 ### Error Handling & Fallback
-- [ ] **Retry Logic**: Implement a retry mechanism with exponential backoff for the live API requests before triggering the fallback to mock data.
-- [ ] **Granular Error Reporting**: Improve the UI to provide more specific error messages to the user (e.g., distinguishing between "Network Offline", "API Rate Limited", and "Location Not Found").
+- [x] **Retry Logic**: Implement a retry mechanism with exponential backoff for the live API requests before triggering the fallback to mock data.
+- [x] **Granular Error Reporting**: Improve the UI to provide more specific error messages to the user (e.g., distinguishing between "Network Offline", "API Rate Limited", and "Location Not Found").
+
+### Advanced Data Pipeline & Map Insights (National/Regional Scale)
+- [ ] **Expand Radius via Batch Data Pipeline**: The current UK Police API `street-level` endpoint restricts queries to a 1-mile radius. To query an entire city, county, or the whole UK, we must transition from real-time API fetching to a **Batch Data Pipeline**.
+  - **Automation (GitHub Actions / Airflow)**: Set up a monthly cron job to automatically download the bulk ZIP files provided by the UK Police Data portal (containing all national data).
+  - **Data Transformation (Python / Polars / dbt)**: Clean the CSVs, map coordinates, and convert the data into **Apache Parquet** format (a highly compressed columnar format).
+  - **Static Hosting (S3 / Cloudflare R2)**: Upload the partitioned `.parquet` files to a static CDN.
+  - **Client-Side Querying (DuckDB-WASM)**: Use DuckDB-WASM in the browser to query the Parquet files directly via HTTP Range Requests. This allows the app to aggregate millions of rows (national level) in milliseconds without downloading the entire file, achieving $O(1)$ network transfer for specific columns and blazing fast $O(N)$ aggregation.
+- [ ] **Choropleth Maps**: Instead of just heatmaps, use GeoJSON boundaries (e.g., London Boroughs, UK Wards, or Police Force Areas) to color-code regions based on crime rates per capita. *Tools: `react-leaflet` with GeoJSON layers.*
+- [ ] **Hexbin Maps**: Group crimes into hexagonal grids for a more structured, analytical density view. *Tools: `deck.gl` or `d3-hexbin`.*
+- [ ] **Time-Series Animation**: Add a timeline slider to the map to watch crime hotspots shift over months or years.
+- [ ] **Interactive Map Filtering**: Add UI toggles to filter the map by specific crime types (e.g., only show "Burglary" vs "Violent Crime") dynamically without re-fetching data.

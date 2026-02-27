@@ -1,0 +1,4 @@
+/* Make the heatmap layer semi-transparent so map details are visible underneath */
+.leaflet-heatmap-layer {
+  opacity: 0.6 !important;
+}
