@@ -38,15 +38,14 @@ const FallbackBanner: React.FC<FallbackBannerProps> = ({ isFallback, error }) =>
   }
 
   return (
-    <div className="mb-8 p-4 bg-amber-100 dark:bg-amber-900/50 border-l-4 border-amber-500 text-amber-800 dark:text-amber-200 rounded-lg shadow-md" role="alert">
-      <div className="flex items-center gap-2 mb-2">
-        <ErrorIcon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-        <p className="font-bold text-lg">{errorTitle}</p>
+    <div className="mb-4 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-900 dark:text-amber-200 text-sm" role="alert">
+      <div className="flex items-center gap-2 mb-1">
+        <ErrorIcon className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+        <p className="font-semibold">{errorTitle}</p>
       </div>
-      <p>{errorDescription}</p>
+      <p className="text-xs mb-2">{errorDescription}</p>
       {error && (
-        <div className="mt-3 text-sm font-mono bg-amber-200 dark:bg-amber-800/50 p-3 rounded overflow-x-auto">
-          <strong className="text-amber-900 dark:text-amber-100 block mb-1">Technical Details:</strong> 
+        <div className="text-xs font-mono bg-amber-100/50 dark:bg-amber-900/20 p-2 border border-amber-200/50 dark:border-amber-800/30 overflow-x-auto">
           <span className="opacity-80">{error}</span>
         </div>
       )}

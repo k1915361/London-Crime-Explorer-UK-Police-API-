@@ -8,11 +8,11 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ label, value, emoji }) => (
-  <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex items-center space-x-4">
-    <div className="text-3xl bg-slate-100 dark:bg-slate-700 p-3 rounded-full">{emoji}</div>
+  <div className="bg-transparent p-2 border border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
+    <div className="text-lg bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded">{emoji}</div>
     <div>
-      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
+      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{value}</p>
     </div>
   </div>
 );

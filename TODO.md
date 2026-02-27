@@ -56,4 +56,4 @@ This document tracks the completed features and outlines potential future improv
 - [ ] **Choropleth Maps**: Instead of just heatmaps, use GeoJSON boundaries (e.g., London Boroughs, UK Wards, or Police Force Areas) to color-code regions based on crime rates per capita. *Tools: `react-leaflet` with GeoJSON layers.*
 - [ ] **Hexbin Maps**: Group crimes into hexagonal grids for a more structured, analytical density view. *Tools: `deck.gl` or `d3-hexbin`.*
 - [ ] **Time-Series Animation**: Add a timeline slider to the map to watch crime hotspots shift over months or years.
-- [ ] **Interactive Map Filtering**: Add UI toggles to filter the map by specific crime types (e.g., only show "Burglary" vs "Violent Crime") dynamically without re-fetching data.
+- [x] **Interactive Map Filtering**: Add UI toggles to filter the map by specific crime types (e.g., only show "Burglary" vs "Violent Crime") dynamically without re-fetching data.

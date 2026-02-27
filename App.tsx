@@ -108,7 +108,7 @@ const App: React.FC = () => {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
                 <StatCard label="Data Source" value={isFallback ? "Fallback" : "Live API"} emoji={isFallback ? "⚠️" : "✅"} />
                 <StatCard label="Returned Records" value={isQueryLoading ? '...' : totalRows.toLocaleString()} emoji="📊" />
                 <StatCard label="Query Engine" value={queryEngine} emoji={queryEngine.includes('Duck') ? "🦆" : "🧠"} />
@@ -126,10 +126,10 @@ const App: React.FC = () => {
 
             <FallbackBanner isFallback={isFallback} error={apiError} />
 
-            <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2 sm:mb-0">
-                        Crime Analytics near "{searchLocation}" for {searchDate}
+            <div className="mt-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                    <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2 sm:mb-0">
+                        Analytics: {searchLocation} ({searchDate})
                     </h2>
                     <ViewToggle currentView={view} onViewChange={setView} />
                 </div>
@@ -151,8 +151,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
-        <main className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-white dark:bg-[#0d0d0d] text-zinc-900 dark:text-zinc-300 font-sans text-sm">
+        <main className="max-w-6xl mx-auto p-2 sm:p-4">
             <Header />
             {renderContent()}
         </main>

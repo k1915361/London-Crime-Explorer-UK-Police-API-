@@ -21,15 +21,15 @@ const getEmojiForCrime = (crimeType: string): string => {
 
 const CrimeResultItem: React.FC<CrimeResultItemProps> = ({ crimeData }) => {
   return (
-    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 border-l-4 border-indigo-500 hover:shadow-md">
-      <div className="flex items-center space-x-4">
-        <span className="text-3xl">{getEmojiForCrime(crimeData.crimeType)}</span>
+    <div className="flex items-center justify-between p-2 border-b border-zinc-200 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+      <div className="flex items-center gap-2">
+        <span className="text-sm shrink-0 w-6 text-center">{getEmojiForCrime(crimeData.crimeType)}</span>
         <div>
-          <p className="font-semibold text-slate-900 dark:text-slate-100">{crimeData.crimeType}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-400">Outcome: {crimeData.outcome}</p>
+          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{crimeData.crimeType}</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">{crimeData.outcome}</p>
         </div>
       </div>
-      <span className="text-xl font-extrabold text-indigo-700 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 rounded-full">
+      <span className="font-mono text-sm text-zinc-900 dark:text-zinc-100">
         {crimeData.count.toLocaleString()}
       </span>
     </div>

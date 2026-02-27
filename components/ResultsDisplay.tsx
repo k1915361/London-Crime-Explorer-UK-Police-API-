@@ -23,10 +23,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, searchLocation
   const renderContent = () => {
     if (results.length === 0 && searchLocation) {
       return (
-        <div className="text-center py-16 px-6 bg-slate-100 dark:bg-slate-800 rounded-lg">
-          <p className="text-5xl mb-4">🤷</p>
-          <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300">No Results Found</h3>
-          <p className="text-slate-500 dark:text-slate-400">
+        <div className="text-center py-8 px-4 border border-zinc-200 dark:border-zinc-800">
+          <p className="text-2xl mb-2">🤷</p>
+          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">No Results Found</h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             No crime data was found for "{searchLocation}". Try a different or broader location.
           </p>
         </div>
@@ -36,7 +36,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, searchLocation
     return (
       <div 
         ref={parentRef} 
-        className="h-[600px] overflow-auto pr-2"
+        className="h-[600px] overflow-auto border border-zinc-200 dark:border-zinc-800"
       >
         <div
           style={{
@@ -58,7 +58,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, searchLocation
                   left: 0,
                   width: '100%',
                   transform: `translateY(${virtualRow.start}px)`,
-                  paddingBottom: '0.75rem', // space-y-3 equivalent
                 }}
               >
                 <CrimeResultItem crimeData={item} />
