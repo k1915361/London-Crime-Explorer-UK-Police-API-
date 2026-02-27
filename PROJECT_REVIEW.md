@@ -1,5 +1,5 @@
 # Project Review: London Crime Explorer
-
+ 
 ## Overview
 London Crime Explorer is an interactive, responsive web application that allows users to search, visualize, and analyze street-level crime data across the UK. Built with modern web technologies, the application provides real-time insights into crime statistics through aggregated lists and interactive heatmaps.
 
