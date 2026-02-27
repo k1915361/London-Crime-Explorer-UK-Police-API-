@@ -17,7 +17,13 @@ describe('apiService', () => {
     vi.mocked(geocodingService.geocodeLocation).mockResolvedValue({ lat: '51.5', lon: '-0.1' });
 
     // Mock fetch for live API
-    const mockApiData = [{ id: 1, category: 'anti-social-behaviour', location: { latitude: '51.5', longitude: '-0.1' } }];
+    const mockApiData = [{ 
+      id: 1, 
+      category: 'anti-social-behaviour', 
+      location: { latitude: '51.5', longitude: '-0.1', street: { id: 1, name: 'Street' } },
+      month: '2024-04',
+      outcome_status: null
+    }];
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockApiData,
@@ -50,7 +56,13 @@ describe('apiService', () => {
   it('should fallback to mock data if geocoding fails', async () => {
     vi.mocked(geocodingService.geocodeLocation).mockRejectedValue(new Error('Geocoding failed'));
 
-    const mockFallbackData = [{ id: 2, category: 'burglary', location: { latitude: '51.5', longitude: '-0.1' } }];
+    const mockFallbackData = [{ 
+      id: 2, 
+      category: 'burglary', 
+      location: { latitude: '51.5', longitude: '-0.1', street: { id: 2, name: 'Street' } },
+      month: '2024-04',
+      outcome_status: { category: 'Under investigation', date: '2024-04' }
+    }];
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       statusText: 'OK',
@@ -68,7 +80,13 @@ describe('apiService', () => {
   it('should fallback to mock data if live API fails', async () => {
     vi.mocked(geocodingService.geocodeLocation).mockResolvedValue({ lat: '51.5', lon: '-0.1' });
 
-    const mockFallbackData = [{ id: 2, category: 'burglary', location: { latitude: '51.5', longitude: '-0.1' } }];
+    const mockFallbackData = [{ 
+      id: 2, 
+      category: 'burglary', 
+      location: { latitude: '51.5', longitude: '-0.1', street: { id: 2, name: 'Street' } },
+      month: '2024-04',
+      outcome_status: { category: 'Under investigation', date: '2024-04' }
+    }];
     
     // First call to live API fails, second call to mock data succeeds
     global.fetch = vi.fn()

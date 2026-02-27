@@ -16,7 +16,9 @@ const App: React.FC = () => {
   const [results, setResults] = useState<CrimeData[]>([]);
   const [rawCrimeData, setRawCrimeData] = useState<ApiCrimeRecord[]>([]);
   const [searchLocation, setSearchLocation] = useUrlState<string>('location', 'Westminster, London');
+  const [searchDate, setSearchDate] = useUrlState<string>('date', '2024-04');
   const [inputValue, setInputValue] = useState<string>(searchLocation);
+  const [inputDate, setInputDate] = useState<string>(searchDate);
   const [isQueryLoading, setIsQueryLoading] = useState<boolean>(true);
   const [queryError, setQueryError] = useState<string | null>(null);
 
@@ -32,9 +34,10 @@ const App: React.FC = () => {
   // Sync input value if URL changes via back/forward
   useEffect(() => {
     setInputValue(searchLocation);
-  }, [searchLocation]);
+    setInputDate(searchDate);
+  }, [searchLocation, searchDate]);
 
-  const executeSearch = useCallback(async (location: string) => {
+  const executeSearch = useCallback(async (location: string, date: string) => {
     if (!location.trim()) {
         setResults([]);
         setRawCrimeData([]);
@@ -48,7 +51,7 @@ const App: React.FC = () => {
     setIsFallback(false);
 
     try {
-      const { data, isFallback: fallbackStatus, error: fetchError, center } = await fetchCrimeData(location);
+      const { data, isFallback: fallbackStatus, error: fetchError, center } = await fetchCrimeData(location, date);
       
       setRawCrimeData(data);
       setIsFallback(fallbackStatus);
@@ -78,16 +81,17 @@ const App: React.FC = () => {
 
   // Trigger search whenever the URL search location changes
   useEffect(() => {
-    executeSearch(searchLocation);
-  }, [searchLocation, executeSearch]);
+    executeSearch(searchLocation, searchDate);
+  }, [searchLocation, searchDate, executeSearch]);
 
   const handleSearchSubmit = () => {
     const trimmedInput = inputValue.trim();
-    if (trimmedInput !== searchLocation) {
+    if (trimmedInput !== searchLocation || inputDate !== searchDate) {
         setSearchLocation(trimmedInput);
+        setSearchDate(inputDate);
     } else {
         // If it's the same, just re-trigger the search manually
-        executeSearch(trimmedInput);
+        executeSearch(trimmedInput, inputDate);
     }
   };
 
@@ -113,6 +117,8 @@ const App: React.FC = () => {
             <SearchBar
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                month={inputDate}
+                onMonthChange={(e) => setInputDate(e.target.value)}
                 onSearch={handleSearchSubmit}
                 isLoading={isQueryLoading}
                 disabled={isQueryLoading}
@@ -123,7 +129,7 @@ const App: React.FC = () => {
             <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2 sm:mb-0">
-                        Crime Analytics near "{searchLocation}"
+                        Crime Analytics near "{searchLocation}" for {searchDate}
                     </h2>
                     <ViewToggle currentView={view} onViewChange={setView} />
                 </div>

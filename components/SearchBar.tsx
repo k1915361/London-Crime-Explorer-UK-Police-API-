@@ -3,12 +3,14 @@ import React from 'react';
 interface SearchBarProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  month: string;
+  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch: () => void;
   isLoading: boolean;
   disabled: boolean;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch, isLoading, disabled }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, month, onMonthChange, onSearch, isLoading, disabled }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onSearch();
@@ -25,6 +27,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch, isLoad
         onKeyDown={handleKeyDown}
         placeholder="Enter Location (e.g., 'Mayfair, London')"
         className="flex-grow p-3 text-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:opacity-50"
+        disabled={disabled}
+      />
+      <input
+        type="month"
+        value={month}
+        onChange={onMonthChange}
+        onKeyDown={handleKeyDown}
+        min="2021-01"
+        max="2024-12"
+        className="p-3 text-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:opacity-50"
         disabled={disabled}
       />
       <button

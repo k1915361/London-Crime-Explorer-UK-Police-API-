@@ -39,7 +39,7 @@ This document tracks the completed features and outlines potential future improv
 ### User Experience (UX)
 - [ ] **Client-Side Caching**: Implement caching (using `localStorage`, `IndexedDB`, or a library like React Query) for previously searched locations to reduce redundant API calls and improve load times.
 - [x] **URL State Management**: Sync the search query and active view (list/map) with the URL query parameters (e.g., `?location=Westminster&view=map`). This allows users to bookmark and share specific searches.
-- [ ] **Date Filtering**: Add a date picker UI to allow users to query crime data for specific months (currently hardcoded to `2024-04` in the API call).
+- [x] **Date Filtering**: Add a date picker UI to allow users to query crime data for specific months (currently hardcoded to `2024-04` in the API call).
 - [ ] **Map Clustering**: Add marker clustering (e.g., `react-leaflet-cluster`) for lower zoom levels, allowing users to toggle between a density heatmap and discrete clustered incidents.
 - [ ] Fetch after clicking a point area on map
 

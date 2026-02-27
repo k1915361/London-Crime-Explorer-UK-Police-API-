@@ -23,7 +23,7 @@ interface FetchResult {
  * This ensures the application remains functional and provides a consistent data structure
  * to the rest of the app, while also clearly flagging when fallback data is in use.
  */
-export const fetchCrimeData = async (location: string): Promise<FetchResult> => {
+export const fetchCrimeData = async (location: string, date: string = '2024-04'): Promise<FetchResult> => {
   let center: { lat: number; lon: number } | null = null;
   try {
     // Step 1: Geocode the location string to get lat/lng
@@ -32,7 +32,7 @@ export const fetchCrimeData = async (location: string): Promise<FetchResult> => 
 
 
     // Step 2: Fetch data from the live API using the coordinates
-    const apiUrl = `${API_BASE_URL}?lat=${center.lat}&lng=${center.lon}&date=2024-04`;
+    const apiUrl = `${API_BASE_URL}?lat=${center.lat}&lng=${center.lon}&date=${date}`;
     
     const response = await fetch(apiUrl);
     if (!response.ok) {
