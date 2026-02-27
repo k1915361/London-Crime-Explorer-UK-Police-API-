@@ -28,20 +28,20 @@ This document tracks the completed features and outlines potential future improv
 
 ### Scalability & Performance
 - [x] **Web Workers for Data Processing**: Offload the in-memory data aggregation (`databaseService.ts`) to a Web Worker. This will prevent the main UI thread from blocking when processing datasets with hundreds of thousands of rows.
-- [ ] **WebAssembly (WASM) Integration**: Re-introduce DuckDB-WASM (or similar) for handling complex, multi-dimensional SQL queries directly in the browser, providing better performance for massive datasets than standard JS arrays.
+- [x] **WebAssembly (WASM) Integration**: Re-introduce DuckDB-WASM (or similar) for handling complex, multi-dimensional SQL queries directly in the browser, providing better performance for massive datasets than standard JS arrays.
 - [x] **List Virtualization**: Implement windowing/virtualization (e.g., `react-window` or `@tanstack/react-virtual`) for the `ResultsDisplay` component to efficiently render long lists of aggregated crime data without DOM bloat.
 
 ### Quality of Code
-- [ ] **Unit Testing**: Add unit tests using Jest or Vitest for critical business logic, specifically `apiService.ts`, `geocodingService.ts`, and `databaseService.ts`.
+- [x] **Unit Testing**: Add unit tests using Jest or Vitest for critical business logic, specifically `apiService.ts`, `geocodingService.ts`, and `databaseService.ts`.
 - [ ] **End-to-End (E2E) Testing**: Implement Cypress or Playwright to automate testing of the critical user journey (Search -> Fetch Data -> View List -> View Map).
 - [ ] **Stricter TypeScript Interfaces**: Refine and strictly type the API responses to avoid `any` types and ensure safer data parsing.
 
 ### User Experience (UX)
 - [ ] **Client-Side Caching**: Implement caching (using `localStorage`, `IndexedDB`, or a library like React Query) for previously searched locations to reduce redundant API calls and improve load times.
-- [ ] **URL State Management**: Sync the search query and active view (list/map) with the URL query parameters (e.g., `?location=Westminster&view=map`). This allows users to bookmark and share specific searches.
+- [x] **URL State Management**: Sync the search query and active view (list/map) with the URL query parameters (e.g., `?location=Westminster&view=map`). This allows users to bookmark and share specific searches.
 - [ ] **Date Filtering**: Add a date picker UI to allow users to query crime data for specific months (currently hardcoded to `2024-04` in the API call).
 - [ ] **Map Clustering**: Add marker clustering (e.g., `react-leaflet-cluster`) for lower zoom levels, allowing users to toggle between a density heatmap and discrete clustered incidents.
-- [ ] Fetch after clicking an area on map
+- [ ] Fetch after clicking a point area on map
 
 ### Error Handling & Fallback
 - [ ] **Retry Logic**: Implement a retry mechanism with exponential backoff for the live API requests before triggering the fallback to mock data.

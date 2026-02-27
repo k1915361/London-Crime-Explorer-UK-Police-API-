@@ -10,11 +10,13 @@ import Loader from './components/Loader';
 import FallbackBanner from './components/FallbackBanner';
 import MapDisplay from './components/MapDisplay';
 import ViewToggle from './components/ViewToggle';
+import { useUrlState } from './hooks/useUrlState';
 
 const App: React.FC = () => {
   const [results, setResults] = useState<CrimeData[]>([]);
   const [rawCrimeData, setRawCrimeData] = useState<ApiCrimeRecord[]>([]);
-  const [searchLocation, setSearchLocation] = useState<string>('Westminster, London');
+  const [searchLocation, setSearchLocation] = useUrlState<string>('location', 'Westminster, London');
+  const [inputValue, setInputValue] = useState<string>(searchLocation);
   const [isQueryLoading, setIsQueryLoading] = useState<boolean>(true);
   const [queryError, setQueryError] = useState<string | null>(null);
 
@@ -22,11 +24,17 @@ const App: React.FC = () => {
   const [isFallback, setIsFallback] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   
-  const [view, setView] = useState<'list' | 'map'>('list');
+  const [view, setView] = useUrlState<'list' | 'map'>('view', 'list');
   const [mapCenter, setMapCenter] = useState<[number, number]>([51.5074, -0.1278]); // Default to London
 
+  const [queryEngine, setQueryEngine] = useState<string>('Initializing...');
 
-  const handleSearch = useCallback(async (location: string) => {
+  // Sync input value if URL changes via back/forward
+  useEffect(() => {
+    setInputValue(searchLocation);
+  }, [searchLocation]);
+
+  const executeSearch = useCallback(async (location: string) => {
     if (!location.trim()) {
         setResults([]);
         setRawCrimeData([]);
@@ -52,8 +60,9 @@ const App: React.FC = () => {
       const db = new CrimeDB(data);
       setTotalRows(db.getTotalRows());
 
-      const aggregatedData = await db.getAggregatedData();
+      const { results: aggregatedData, engine } = await db.getAggregatedData();
       setResults(aggregatedData);
+      setQueryEngine(engine);
 
     } catch (e: any) {
       console.error("Search Execution Error:", e);
@@ -66,10 +75,20 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Trigger search whenever the URL search location changes
   useEffect(() => {
-    handleSearch(searchLocation);
-    // eslint-disable--next-line react-hooks/exhaustive-deps
-  }, []);
+    executeSearch(searchLocation);
+  }, [searchLocation, executeSearch]);
+
+  const handleSearchSubmit = () => {
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput !== searchLocation) {
+        setSearchLocation(trimmedInput);
+    } else {
+        // If it's the same, just re-trigger the search manually
+        executeSearch(trimmedInput);
+    }
+  };
 
 
   const renderContent = () => {
@@ -87,13 +106,13 @@ const App: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <StatCard label="Data Source" value={isFallback ? "Fallback" : "Live API"} emoji={isFallback ? "⚠️" : "✅"} />
                 <StatCard label="Returned Records" value={isQueryLoading ? '...' : totalRows.toLocaleString()} emoji="📊" />
-                <StatCard label="Query Engine" value="In-Memory JS" emoji="🧠" />
+                <StatCard label="Query Engine" value={queryEngine} emoji={queryEngine.includes('Duck') ? "🦆" : "🧠"} />
             </div>
 
             <SearchBar
-                value={searchLocation}
-                onChange={(e) => setSearchLocation(e.target.value)}
-                onSearch={() => handleSearch(searchLocation)}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onSearch={handleSearchSubmit}
                 isLoading={isQueryLoading}
                 disabled={isQueryLoading}
             />
