@@ -27,14 +27,24 @@ export interface ApiCrimeRecord {
   } | null;
 }
 
-declare module '*?url' {
-  const src: string;
-  export default src;
-}
-
-declare module '*?worker' {
-  const workerConstructor: {
-    new (): Worker;
-  };
-  export default workerConstructor;
+export function isApiCrimeRecord(obj: unknown): obj is ApiCrimeRecord {
+  if (typeof obj !== 'object' || obj === null) return false;
+  const record = obj as Record<string, unknown>;
+  
+  if (typeof record.category !== 'string') return false;
+  if (typeof record.id !== 'number') return false;
+  if (typeof record.month !== 'string') return false;
+  
+  if (typeof record.location !== 'object' || record.location === null) return false;
+  const location = record.location as Record<string, unknown>;
+  if (typeof location.latitude !== 'string') return false;
+  if (typeof location.longitude !== 'string') return false;
+  
+  if (record.outcome_status !== null) {
+    if (typeof record.outcome_status !== 'object') return false;
+    const outcome = record.outcome_status as Record<string, unknown>;
+    if (typeof outcome.category !== 'string') return false;
+  }
+  
+  return true;
 }

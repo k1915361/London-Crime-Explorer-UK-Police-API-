@@ -1,4 +1,4 @@
-import type { ApiCrimeRecord } from '../types';
+import { type ApiCrimeRecord, isApiCrimeRecord } from '../types';
 import { geocodeLocation } from './geocodingService';
 
 const MOCK_DATA_PATH = '/mock-crime-data.json';
@@ -38,7 +38,7 @@ export const fetchCrimeData = async (location: string): Promise<FetchResult> => 
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
     }
-    const data = await response.json();
+    const data: unknown = await response.json();
 
     if (!Array.isArray(data) || data.length === 0) {
       console.log(`No crime data found from API for "${location}".`);
@@ -46,12 +46,16 @@ export const fetchCrimeData = async (location: string): Promise<FetchResult> => 
       return { data: [], isFallback: false, error: null, center };
     }
     
-    console.log(`Successfully fetched ${data.length} records from the live API for "${location}".`);
-    return { data: data as ApiCrimeRecord[], isFallback: false, error: null, center };
+    // Validate data
+    const validData = data.filter(isApiCrimeRecord);
+    
+    console.log(`Successfully fetched ${validData.length} records from the live API for "${location}".`);
+    return { data: validData, isFallback: false, error: null, center };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     console.warn(
-      `Live API fetch for "${location}" failed. Reason: ${error.message}. Falling back to mock data.`
+      `Live API fetch for "${location}" failed. Reason: ${errorMessage}. Falling back to mock data.`
     );
     // Step 3: Fallback to mock data if any of the above steps fail
     try {
@@ -59,17 +63,24 @@ export const fetchCrimeData = async (location: string): Promise<FetchResult> => 
       if (!fallbackResponse.ok) {
         throw new Error(`Failed to load mock data file: ${fallbackResponse.statusText}`);
       }
-      const fallbackData = await fallbackResponse.json() as ApiCrimeRecord[];
+      const fallbackData: unknown = await fallbackResponse.json();
+      
+      let validFallbackData: ApiCrimeRecord[] = [];
+      if (Array.isArray(fallbackData)) {
+        validFallbackData = fallbackData.filter(isApiCrimeRecord);
+      }
+      
       // Calculate center from fallback data
-      if (fallbackData.length > 0) {
-        const avgLat = fallbackData.reduce((sum, rec) => sum + parseFloat(rec.location.latitude), 0) / fallbackData.length;
-        const avgLon = fallbackData.reduce((sum, rec) => sum + parseFloat(rec.location.longitude), 0) / fallbackData.length;
+      if (validFallbackData.length > 0) {
+        const avgLat = validFallbackData.reduce((sum, rec) => sum + parseFloat(rec.location.latitude), 0) / validFallbackData.length;
+        const avgLon = validFallbackData.reduce((sum, rec) => sum + parseFloat(rec.location.longitude), 0) / validFallbackData.length;
         center = { lat: avgLat, lon: avgLon };
       }
-      return { data: fallbackData, isFallback: true, error: error.message, center };
-    } catch (fallbackError: any) {
+      return { data: validFallbackData, isFallback: true, error: errorMessage, center };
+    } catch (fallbackError: unknown) {
        console.error("FATAL: Could not load fallback data.", fallbackError);
-       throw new Error(`Live API failed and fallback data could not be loaded: ${fallbackError.message}`);
+       const fallbackErrorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+       throw new Error(`Live API failed and fallback data could not be loaded: ${fallbackErrorMessage}`);
     }
   }
 };

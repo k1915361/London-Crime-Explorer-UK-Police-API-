@@ -64,9 +64,10 @@ const App: React.FC = () => {
       setResults(aggregatedData);
       setQueryEngine(engine);
 
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Search Execution Error:", e);
-      setQueryError(`Search failed: ${e.message}`);
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      setQueryError(`Search failed: ${errorMessage}`);
       setResults([]);
       setRawCrimeData([]);
       setTotalRows(0);

@@ -24,13 +24,18 @@ export const geocodeLocation = async (query: string): Promise<GeocodeResult> => 
       throw new Error(`Geocoding service returned status ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: unknown = await response.json();
 
-    if (!data || data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       throw new Error(`Location not found for query: "${query}"`);
     }
 
-    const { lat, lon } = data[0];
+    const firstResult = data[0] as Record<string, unknown>;
+    if (typeof firstResult.lat !== 'string' || typeof firstResult.lon !== 'string') {
+      throw new Error(`Invalid geocoding response format for query: "${query}"`);
+    }
+
+    const { lat, lon } = firstResult;
     return { lat, lon };
   } catch (error) {
     console.error("Geocoding failed:", error);

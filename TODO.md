@@ -34,7 +34,7 @@ This document tracks the completed features and outlines potential future improv
 ### Quality of Code
 - [x] **Unit Testing**: Add unit tests using Jest or Vitest for critical business logic, specifically `apiService.ts`, `geocodingService.ts`, and `databaseService.ts`.
 - [ ] **End-to-End (E2E) Testing**: Implement Cypress or Playwright to automate testing of the critical user journey (Search -> Fetch Data -> View List -> View Map).
-- [ ] **Stricter TypeScript Interfaces**: Refine and strictly type the API responses to avoid `any` types and ensure safer data parsing.
+- [x] **Stricter TypeScript Interfaces**: Refine and strictly type the API responses to avoid `any` types and ensure safer data parsing.
 
 ### User Experience (UX)
 - [ ] **Client-Side Caching**: Implement caching (using `localStorage`, `IndexedDB`, or a library like React Query) for previously searched locations to reduce redundant API calls and improve load times.
