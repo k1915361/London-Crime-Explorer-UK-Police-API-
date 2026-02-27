@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import type { CrimeData } from '../types';
 import CrimeResultItem from './CrimeResultItem';
 
@@ -10,6 +11,15 @@ interface ResultsDisplayProps {
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, searchLocation }) => {
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: results.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 90, // Estimated height of CrimeResultItem + padding
+    overscan: 5,
+  });
+
   const renderContent = () => {
     if (results.length === 0 && searchLocation) {
       return (
@@ -24,10 +34,38 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, searchLocation
     }
 
     return (
-      <div className="space-y-3">
-        {results.map((item, index) => (
-          <CrimeResultItem key={`${item.crimeType}-${item.outcome}-${index}`} crimeData={item} />
-        ))}
+      <div 
+        ref={parentRef} 
+        className="h-[600px] overflow-auto pr-2"
+      >
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const item = results[virtualRow.index];
+            return (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={rowVirtualizer.measureElement}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  transform: `translateY(${virtualRow.start}px)`,
+                  paddingBottom: '0.75rem', // space-y-3 equivalent
+                }}
+              >
+                <CrimeResultItem crimeData={item} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   };

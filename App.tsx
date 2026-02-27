@@ -52,7 +52,7 @@ const App: React.FC = () => {
       const db = new CrimeDB(data);
       setTotalRows(db.getTotalRows());
 
-      const aggregatedData = db.getAggregatedData();
+      const aggregatedData = await db.getAggregatedData();
       setResults(aggregatedData);
 
     } catch (e: any) {
