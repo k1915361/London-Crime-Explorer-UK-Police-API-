@@ -16,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, month, onMonthCh
       onSearch();
     }
   };
-  
+
   return (
     <div className="flex flex-col sm:flex-row gap-2 mb-4">
       <div className="flex-1">
@@ -27,10 +27,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, month, onMonthCh
           onKeyDown={handleKeyDown}
           disabled={disabled}
           placeholder="Location (e.g., Westminster)"
+          aria-label="Search location"
           className="w-full px-2 py-1 bg-transparent border border-zinc-300 dark:border-zinc-700 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-500 transition-colors disabled:opacity-50 text-sm"
         />
       </div>
-      
+
       <div className="w-full sm:w-32">
         <input
           type="month"
@@ -39,8 +40,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, month, onMonthCh
           onKeyDown={handleKeyDown}
           disabled={disabled}
           min="2021-01"
-          max={new Date().toISOString().slice(0, 7)}
-          className="w-full px-2 py-1 bg-transparent border border-zinc-300 dark:border-zinc-700 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-500 transition-colors disabled:opacity-50 text-sm"
+          aria-label="Select month"
+          className="w-full px-2 py-1 bg-transparent border border-zinc-300 dark:border-zinc-700 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-500 transition-colors disabled:opacity-50 text-sm [color-scheme:light] dark:[color-scheme:dark]"
         />
       </div>
 

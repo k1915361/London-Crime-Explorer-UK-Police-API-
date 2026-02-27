@@ -21,9 +21,11 @@ const getEmojiForCrime = (crimeType: string): string => {
 
 const CrimeResultItem: React.FC<CrimeResultItemProps> = ({ crimeData }) => {
   return (
-    <div className="flex items-center justify-between p-2 border-b border-zinc-200 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-      <div className="flex items-center gap-2">
-        <span className="text-sm shrink-0 w-6 text-center">{getEmojiForCrime(crimeData.crimeType)}</span>
+    <div className="flex items-center justify-between p-3 border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+      <div className="flex items-center gap-3">
+        <span className="flex items-center justify-center text-sm shrink-0 w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm border border-zinc-200 dark:border-zinc-700/50">
+          {getEmojiForCrime(crimeData.crimeType)}
+        </span>
         <div>
           <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{crimeData.crimeType}</p>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">{crimeData.outcome}</p>

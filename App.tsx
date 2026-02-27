@@ -10,6 +10,7 @@ import Loader from './components/Loader';
 import FallbackBanner from './components/FallbackBanner';
 import MapDisplay from './components/MapDisplay';
 import ViewToggle from './components/ViewToggle';
+import TimelinePlayer from './components/TimelinePlayer';
 import { useUrlState } from './hooks/useUrlState';
 
 const App: React.FC = () => {
@@ -25,7 +26,7 @@ const App: React.FC = () => {
   const [totalRows, setTotalRows] = useState<number>(0);
   const [isFallback, setIsFallback] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  
+
   const [view, setView] = useUrlState<'list' | 'map'>('view', 'list');
   const [mapCenter, setMapCenter] = useState<[number, number]>([51.5074, -0.1278]); // Default to London
 
@@ -39,10 +40,10 @@ const App: React.FC = () => {
 
   const executeSearch = useCallback(async (location: string, date: string) => {
     if (!location.trim()) {
-        setResults([]);
-        setRawCrimeData([]);
-        setTotalRows(0);
-        return;
+      setResults([]);
+      setRawCrimeData([]);
+      setTotalRows(0);
+      return;
     }
 
     setIsQueryLoading(true);
@@ -52,14 +53,14 @@ const App: React.FC = () => {
 
     try {
       const { data, isFallback: fallbackStatus, error: fetchError, center } = await fetchCrimeData(location, date);
-      
+
       setRawCrimeData(data);
       setIsFallback(fallbackStatus);
       setApiError(fetchError);
       if (center) {
         setMapCenter([center.lat, center.lon]);
       }
-      
+
       const db = new CrimeDB(data);
       setTotalRows(db.getTotalRows());
 
@@ -87,75 +88,98 @@ const App: React.FC = () => {
   const handleSearchSubmit = () => {
     const trimmedInput = inputValue.trim();
     if (trimmedInput !== searchLocation || inputDate !== searchDate) {
-        setSearchLocation(trimmedInput);
-        setSearchDate(inputDate);
+      setSearchLocation(trimmedInput);
+      setSearchDate(inputDate);
     } else {
-        // If it's the same, just re-trigger the search manually
-        executeSearch(trimmedInput, inputDate);
+      // If it's the same, just re-trigger the search manually
+      executeSearch(trimmedInput, inputDate);
     }
   };
 
 
   const renderContent = () => {
     if (queryError && !isQueryLoading) {
-        return (
-             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-center" role="alert">
-                <p className="font-bold">Error 🛑</p>
-                <p className="text-sm">{queryError}</p>
-            </div>
-        )
+      return (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-center" role="alert">
+          <p className="font-bold">Error 🛑</p>
+          <p className="text-sm">{queryError}</p>
+        </div>
+      )
     }
 
     return (
-        <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-                <StatCard label="Data Source" value={isFallback ? "Fallback" : "Live API"} emoji={isFallback ? "⚠️" : "✅"} />
-                <StatCard label="Returned Records" value={isQueryLoading ? '...' : totalRows.toLocaleString()} emoji="📊" />
-                <StatCard label="Query Engine" value={queryEngine} emoji={queryEngine.includes('Duck') ? "🦆" : "🧠"} />
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+          <StatCard label="Data Source" value={isFallback ? "Fallback" : "Live API"} emoji={isFallback ? "⚠️" : "✅"} />
+          <StatCard label="Returned Records" value={isQueryLoading ? '...' : totalRows.toLocaleString()} emoji="📊" />
+          <StatCard label="Query Engine" value={queryEngine} emoji={queryEngine.includes('Duck') ? "🦆" : "🧠"} />
+        </div>
+
+        <SearchBar
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          month={inputDate}
+          onMonthChange={(e) => setInputDate(e.target.value)}
+          onSearch={handleSearchSubmit}
+          isLoading={isQueryLoading}
+          disabled={isQueryLoading}
+        />
+
+        <TimelinePlayer
+          currentDate={searchDate}
+          onDateChange={(newDate) => {
+            setInputDate(newDate);
+            setSearchDate(newDate);
+          }}
+          disabled={isQueryLoading}
+        />
+
+        <FallbackBanner isFallback={isFallback} error={apiError} />
+
+        <div className="mt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+            <h2 className="text-sm flex gap-2 items-center font-semibold text-zinc-900 dark:text-zinc-100 mb-2 sm:mb-0">
+              Analytics: {searchLocation} ({searchDate})
+              {isQueryLoading && (
+                <span className="text-xs font-normal text-zinc-500 animate-pulse">
+                  Updating...
+                </span>
+              )}
+            </h2>
+            <ViewToggle currentView={view} onViewChange={setView} />
+          </div>
+
+          <div className="relative">
+            {isQueryLoading && results.length === 0 && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50 dark:bg-black/50 backdrop-blur-sm">
+                <Loader message={`Fetching crime data for "${searchLocation}"...`} />
+              </div>
+            )}
+
+            <div className={isQueryLoading && results.length === 0 ? 'invisible' : 'visible'}>
+              {view === 'list' ? (
+                <ResultsDisplay
+                  results={results}
+                  isLoading={isQueryLoading}
+                  error={null}
+                  searchLocation={searchLocation}
+                />
+              ) : (
+                <MapDisplay data={rawCrimeData} center={mapCenter} />
+              )}
             </div>
-
-            <SearchBar
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                month={inputDate}
-                onMonthChange={(e) => setInputDate(e.target.value)}
-                onSearch={handleSearchSubmit}
-                isLoading={isQueryLoading}
-                disabled={isQueryLoading}
-            />
-
-            <FallbackBanner isFallback={isFallback} error={apiError} />
-
-            <div className="mt-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
-                    <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2 sm:mb-0">
-                        Analytics: {searchLocation} ({searchDate})
-                    </h2>
-                    <ViewToggle currentView={view} onViewChange={setView} />
-                </div>
-                 {isQueryLoading ? (
-                    <Loader message={`Fetching crime data for "${searchLocation}"...`} />
-                ) : view === 'list' ? (
-                    <ResultsDisplay
-                        results={results}
-                        isLoading={false}
-                        error={null}
-                        searchLocation={searchLocation}
-                    />
-                ) : (
-                    <MapDisplay data={rawCrimeData} center={mapCenter} />
-                )}
-            </div>
-        </>
+          </div>
+        </div>
+      </>
     );
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0d0d0d] text-zinc-900 dark:text-zinc-300 font-sans text-sm">
-        <main className="max-w-6xl mx-auto p-2 sm:p-4">
-            <Header />
-            {renderContent()}
-        </main>
+      <main className="max-w-6xl mx-auto p-2 sm:p-4">
+        <Header />
+        {renderContent()}
+      </main>
     </div>
   );
 };
