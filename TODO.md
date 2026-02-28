@@ -41,6 +41,8 @@ These features demonstrate modern engineering practices that employers look for 
 - [x] **WCAG Compliance Auditing**: Use standard tools (like Lighthouse / axe) to ensure all interactive elements have correct `aria-labels`, support keyboard-only navigation, and pass contrast ratios.
 - [ ] **Progressive Web App (PWA)**: Register a Service Worker (e.g. `vite-plugin-pwa`) to aggressively cache JS/CSS assets and map tiles, allowing the app to load instantly and function offline.
 
+- [] Use Next.js to optimise the app with server-side rendering and bun.js as backend (but compare the pros and cons of current setup react vs next.js with bun.js).
+
 ### Scalability & Data Processing
 - [x] **Web Workers for Data Processing**: Offload the in-memory data aggregation (`databaseService.ts`) to a Web Worker. This will prevent the main UI thread from blocking when processing datasets with hundreds of thousands of rows.
 - [x] **WebAssembly (WASM) Integration**: Re-introduce DuckDB-WASM (or similar) for handling complex, multi-dimensional SQL queries directly in the browser, providing better performance for massive datasets than standard JS arrays.
